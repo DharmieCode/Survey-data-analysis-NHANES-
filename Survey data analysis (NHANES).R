@@ -294,11 +294,6 @@ c<-ggplot(main_data2, aes(HDL))+
 d<-ggplot(main_data2, aes(triglyceride))+
   geom_histogram(binwidth=15, fill="yellow") +
   theme_classic()
-# Alcohol
-e<-ggplot(main_data2, aes(alq130))+
-  geom_histogram(binwidth=15, fill="orange") +
-  theme_classic()
-e
 
 
 ## GRID
