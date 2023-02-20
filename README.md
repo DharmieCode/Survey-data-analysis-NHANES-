@@ -8,4 +8,4 @@ STEPS
 2. Data cleaning
 3. Data visualization
 4. Descriptive statistics
-5. Modeling
+5. Regression
