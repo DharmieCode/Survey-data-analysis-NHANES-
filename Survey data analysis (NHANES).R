@@ -100,6 +100,8 @@ colnames(complete_data)
 ###################
 # DATA CLEANING
 ####################
+glimpse(complete_data)
+
 ##################################
 # RECODE VARIABLES
 ##################################
@@ -236,7 +238,7 @@ complete_data$tchol<-complete_data$lbxtc
 # Identify main variables
 ##########################
 colnames(complete_data)
-main_data<-complete_data[,c(1,36:37,5,6,20,38:49,4,11:14)]
+main_data<-complete_data[,c(1,36:37,5,6,20,38:50,4,11:14)]
 colnames(main_data)
 
 
@@ -264,16 +266,14 @@ round(sump, digits = 2)
 library(car)
 vif(model)
 
-
+               
+               
 ####################
-##### Hosmer-Lemeshow goodness-of-fit test 
+## Correlation
 ####################
-#install.packages("glmtoolbox")
-library(glmtoolbox)
-
-hltest(model)
-
-
+corr <- round(cor(main_data2[,c(5,17:19)]), 1)
+         
+               
 ####################
 ## DATA VISUALIZATION
 ####################
@@ -299,12 +299,38 @@ d<-ggplot(main_data2, aes(triglyceride))+
 ## GRID
 gridExtra::grid.arrange(a,b,c,d)
 
+## Boxplot for age and MI
+table(main_data2$MI)
+e<-ggplot(main_data2, aes(x = MI, y = ridageyr)) +
+  geom_boxplot() + 
+  theme_classic()
+
+# Categorical variables
+# Barplots
+f<-ggplot(main_data2, aes(x = MI, fill= diabetes)) +
+  geom_bar(position = "dodge")+
+  theme_classic()
+g<-ggplot(main_data2, aes(x = MI, fill= gender)) +
+  geom_bar(position = "dodge")+
+  theme_classic()
+h<-ggplot(main_data2, aes(x = MI, fill= race)) +
+  geom_bar(position = "dodge")+
+  theme_classic()
+i<-ggplot(main_data2, aes(x = MI, fill= smoking)) +
+  geom_bar(position = "dodge")+
+  theme_classic()
+i
+
+## GRID
+gridExtra::grid.arrange(f,g,h,i)
+
+
 
 
 
 
 ################################################################
-# SURVEY DATA ANALYSIS  
+# SURVEY DATA ANALYSIS (NHANES)
 ################################################################
 library(survey)
 main_data$mec4yr= 1/2*main_data$wtmec2yr
@@ -316,9 +342,9 @@ options(survey.adjust.domain.lonely=TRUE)
 options(survey.lonely.psu="adjust")
 
 
-##############
-### TABLE ONE
-###############
+#######################################
+### Descriptive statistics (TABLE ONE)
+######################################
 library(tableone)
 tab2 <- svyCreateTableOne(vars = c("ridageyr","riagendr","race","marital",
                                    "education", "BMI","smoking","alq130",
@@ -334,19 +360,7 @@ tab2 <- svyCreateTableOne(vars = c("ridageyr","riagendr","race","marital",
 summary(tab2)
 
 
-
-
-####################
-## STEPWISE ELIMINATION
-####################
-library(MASS)
-# Stepwise regression model
-step.model <- stepAIC(model, direction = "both", 
-                      trace = FALSE)
-summary(step.model)
-
-
-
+               
 #################
 # LOGISTIC REGRESSION (SURVEY)
 ################
@@ -359,4 +373,11 @@ summary(logit)
 sump<-exp(cbind(OR=coef(logit), confint(logit))) 
 round(sump, digits = 2)
 
+
+#############################################
+##### Hosmer-Lemeshow goodness-of-fit test 
+#############################################
+#installed.packages("ResourceSelection")
+library(ResourceSelection)
+hoslem.test(logit$y, fitted(logit))
 
