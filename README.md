@@ -8,6 +8,7 @@ The aim of the study was to examine the association between diabetes and myocard
 **Data Source**
 
 The data used for this study was retrieved from the NHANES website (CDC). NHANES is a cross-sectional survey created to monitor the health and nutrition of the US population. 
+
 Link: https://wwwn.cdc.gov/nchs/nhanes/default.aspx
 
 **Data analysis steps**
