@@ -2,6 +2,10 @@
 library(Hmisc)
 library(tidyverse)
 library(dplyr)
+library(tibble)
+library(ggplot2)
+library(cowplot)
+library(ggcorrplot)
 
 ###############
 ## DATA
@@ -240,7 +244,7 @@ complete_data$tchol<-complete_data$lbxtc
 # Identify main variables
 ##########################
 colnames(complete_data)
-main_data<-complete_data[,c(1,36:37,5,6,20,38:50,4,11:14)]
+main_data<-complete_data[,c(1,36:37,6,20,38:50,4,11:14)]
 colnames(main_data)
 
 
@@ -270,10 +274,20 @@ vif(model)
 
                
                
+##########################################
+## Further EDA
+############################################               
+               
 ####################
 ## Correlation
 ####################
-corr <- round(cor(main_data2[,c(5,17:19)]), 1)
+colnames(main_data2)
+numeric_data<-main_data2[,c(4,5,16:18)]
+corr<-round(cor(numeric_data), 1)
+corr
+
+ggcorrplot(corr, hc.order = TRUE, type = "lower",
+           lab = TRUE)
          
                
 ####################
@@ -281,55 +295,178 @@ corr <- round(cor(main_data2[,c(5,17:19)]), 1)
 ####################
 colnames(main_data2)
 # Age
-a<-ggplot(main_data2, aes(ridageyr))+
-  geom_histogram(binwidth=5, fill="blue")+
-  theme_classic()
-# Total cholesterol
-b<-ggplot(main_data2, aes(tchol))+
-  geom_histogram(binwidth=15, fill="red")+
-  theme_classic()
-# HDL
-c<-ggplot(main_data2, aes(HDL))+
-  geom_histogram(binwidth=15, fill="green")+
-  theme_classic()
-# Triglyceride
-d<-ggplot(main_data2, aes(triglyceride))+
-  geom_histogram(binwidth=15, fill="yellow") +
-  theme_classic()
+p1<-main_data2 %>% 
+  ggplot(., aes(ridageyr))+
+  geom_histogram(bins=30, color="black", fill="red")+
+  xlab("Age")+
+  ylab("Frequency")+
+  ggtitle("Distribution of age")+
+  theme_classic()+
+  theme(axis.title = element_text(size = 13),
+        plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
+p1
+               
+#Gender
+p2<-main_data2 %>% 
+  ggplot(., aes(gender))+
+  geom_bar(color="black", fill="blue")+
+  xlab("Gender")+
+  ylab("Frequency")+
+  ggtitle("Barplot of gender")+
+  theme_classic()+
+  theme(axis.title = element_text(size = 13),
+        plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
+  
+# Race
+p3<-main_data2 %>% 
+  ggplot(., aes(race))+
+  geom_bar(color="black", fill="green")+
+  xlab("Race")+
+  ylab("Frequency")+
+  ggtitle("Barplot of race")+
+  theme_classic()+
+  theme(axis.title = element_text(size = 13),
+        axis.text.x = element_text(size = 7),
+        plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
+p3
+
+# Education
+# 1: less than high school; 2: high school; 3: more tha high school
+p4<-main_data2 %>% 
+  ggplot(., aes(education))+
+  geom_bar(color="black", fill="brown")+
+  xlab("Education")+
+  ylab("Frequency")+
+  ggtitle("Barplot of education")+
+  theme_classic()+
+  theme(axis.title = element_text(size = 13),
+        plot.title = element_text(size = 20, face = "bold",hjust = 0.5))+
+  scale_x_discrete(limit=c("1", "2", "3"),
+                   labels=c("<high sch", "high sch", ">high sch"))
+p4
+               
+# marital
+p5<-main_data2 %>% 
+  ggplot(., aes(marital))+
+  geom_bar(color="black", fill="orange")+
+  xlab("Marital status")+
+  ylab("Frequency")+
+  ggtitle("Barplot of marital status")+
+  theme_classic()+
+  theme(axis.title = element_text(size = 13),
+        plot.title = element_text(size = 20, face = "bold",hjust = 0.5))+
+  scale_x_discrete(limit=c("1", "2", "3"),
+                   labels=c("never married", "married", "previously married"))
+p5
+
+## BMI
+p6<-main_data2 %>% 
+  ggplot(., aes(BMI))+
+  geom_bar(color="black", fill="purple")+
+  xlab("BMI")+
+  ylab("Frequency")+
+  ggtitle("Barplot of BMI")+
+  theme_classic()+
+  theme(axis.title = element_text(size = 13),
+        axis.text.x = element_text(size = 9),
+        plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
+p6
+
+# grid
+plot_grid(p1,p2,p3,p4,p5,p6, nrow = 3, ncol = 2) 
+               
+               
+# smoking
+p7<-main_data2 %>% 
+  ggplot(., aes(smoking))+
+  geom_bar(color="black", fill="grey")+
+  xlab("Smoking")+
+  ylab("Frequency")+
+  ggtitle("Barplot of smoking")+
+  theme_classic()+
+  theme(axis.title = element_text(size = 13),
+        axis.text.x = element_text(size = 9),
+        plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
+p7
+
+# Hypertension
+main_data2$hypertension<-factor(main_data2$hypertension)
+p8<-main_data2 %>% 
+  ggplot(., aes(hypertension))+
+  geom_bar(color="black", fill="green")+
+  xlab("Hypertension")+
+  ylab("Frequency")+
+  ggtitle("Barplot of hypertension")+
+  theme_classic()+
+  theme(axis.title = element_text(size = 13),
+        axis.text.x = element_text(size = 9),
+        plot.title = element_text(size = 20, face = "bold",hjust = 0.5))+
+  scale_x_discrete(limit=c("0", "1"),
+                   labels=c("No", "Yes"))
+p8
+
+# Diabetes
+p9<-main_data2 %>% 
+  ggplot(., aes(diabetes))+
+  geom_bar(color="black", fill="blue")+
+  xlab("Diabetes")+
+  ylab("Frequency")+
+  ggtitle("Barplot of diabetes")+
+  theme_classic()+
+  theme(axis.title = element_text(size = 13),
+        axis.text.x = element_text(size = 9),
+        plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
+p9
+
+# Total chol
+p10<-main_data2 %>% 
+  ggplot(., aes(tchol))+
+  geom_histogram(bins=30, color="black", fill="red")+
+  xlab("Total cholesterol")+
+  ylab("Frequency")+
+  ggtitle("Distribution of total cholesterol")+
+  theme_classic()+
+  theme(axis.title = element_text(size = 13),
+        plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
+p10
 
 
-## GRID
-gridExtra::grid.arrange(a,b,c,d)
+# grid
+plot_grid(p7,p8,p9,p10)
 
-## Boxplot for age and MI
-table(main_data2$MI)
-e<-ggplot(main_data2, aes(x = MI, y = ridageyr)) +
-  geom_boxplot() + 
-  theme_classic()
+               
+               
+# EXAMINE covariates BY outcome (MI)
+# diabetes vs MI
+main_data2 %>% 
+  ggplot(aes(diabetes, fill=MI))+
+  geom_bar(position = "dodge",
+           color="black")+
+  xlab("Diabetes")+
+  ylab("Frequency")+
+  ggtitle("Diabetes status by MI")+
+  geom_text(aes(label=..count..), stat="count", vjust=-0.3,
+            position = position_dodge(.9),color="red")+
+  scale_fill_viridis_d(option="magna")+
+  theme_classic()+
+  theme(axis.text.x = element_text(size = 9),
+        plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
+  
 
-# Categorical variables
-# Barplots
-f<-ggplot(main_data2, aes(x = MI, fill= diabetes)) +
-  geom_bar(position = "dodge")+
-  theme_classic()
-g<-ggplot(main_data2, aes(x = MI, fill= gender)) +
-  geom_bar(position = "dodge")+
-  theme_classic()
-h<-ggplot(main_data2, aes(x = MI, fill= race)) +
-  geom_bar(position = "dodge")+
-  theme_classic()
-i<-ggplot(main_data2, aes(x = MI, fill= smoking)) +
-  geom_bar(position = "dodge")+
-  theme_classic()
-i
-
-## GRID
-gridExtra::grid.arrange(f,g,h,i)
+## age vs MI
+main_data2 %>% 
+  ggplot(aes(x=MI, y=ridageyr))+
+  geom_boxplot()+
+  xlab("Myocardial infarction")+
+  ylab("Age")+
+  ggtitle("Boxplot showing age vs MI")+
+  theme_classic()+
+  theme(axis.title = element_text(size = 13),
+        axis.text.x = element_text(size = 9),
+        plot.title = element_text(size = 20, face = "bold",hjust = 0.5))
 
 
-
-
-
+ 
 
 ################################################################
 # SURVEY DATA ANALYSIS (NHANES)
