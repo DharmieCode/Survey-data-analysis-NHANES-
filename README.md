@@ -3,7 +3,7 @@
 
 **Study aim**
 
-The aim of the study was to examine the association between diabetes and myocardial infarction using National Health and Nutrition Examination Survey (NHANES) data 2015-2018.
+The aim of this study was to examine the association between diabetes and myocardial infarction using National Health and Nutrition Examination Survey (NHANES) data 2015-2018.
 
 **Data Source**
 
