@@ -12,4 +12,4 @@ STEPS
 
 
 Data visualization
-<img width="922" alt="Data visualization_demo" src="https://user-images.githubusercontent.com/65930304/224233693-61d97e84-1693-49de-b36d-a546f1ac2a6e.png">
+<img width="446" alt="Data visualization_demo" src="https://user-images.githubusercontent.com/65930304/224233825-256edd80-57ed-40ed-b914-205c418813cc.png">
