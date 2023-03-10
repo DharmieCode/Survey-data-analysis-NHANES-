@@ -19,8 +19,7 @@ Link: https://wwwn.cdc.gov/nchs/nhanes/default.aspx
 5. Modeling (Logistic regression)
 
 
-
-<br> <br> </br> </br>
+<br> </br>
 **Data visualization**
 
 
